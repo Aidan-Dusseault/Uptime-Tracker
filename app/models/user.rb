@@ -12,16 +12,17 @@
 require 'digest'
 class User < ActiveRecord::Base
 
-  attr_accessible :name, :email, :password, :password_confirmation
+  attr_accessor :password
+  attr_accessible :name, :email, :password, :password_confirmtaion
 
   has_many :accounts, :through => :memberships,
                       :source  => "member_id"
 
   validates :name, :presence   => true,
-                   :uniqueness => true { :case_sensitive => false }
+                   :uniqueness => { :case_sensitive => false },
                    :length     => { :maximum => 20 }
-  validates :password, :presence     => true, 
-                       :confirmation => true
+  validates :password, :presence     => true,
+                       :confirmation => true,
                        :length       => { :within => 6..40 }
   
   before_save :encrypt_password
