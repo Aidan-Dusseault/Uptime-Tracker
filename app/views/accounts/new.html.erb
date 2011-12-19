@@ -1,0 +1,8 @@
+<h1>New Account</h1>
+  <%= form_for(@account) do |f| %>
+    <div class="forms">
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+    </div>
+    <%= f.submit "Submit" %>
+  <% end %>

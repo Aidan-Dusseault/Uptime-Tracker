@@ -2,9 +2,15 @@ UptimeTracker::Application.routes.draw do
 
   get "pages/home"
   resources :users
+  resources :domains
+  resources :accounts
 
   root :to => 'pages#home'
   match '/signup', :to => 'users#new'
+  match '/check/all', :to => 'site_check#index'
+  match '/check/users/:id', :to => 'site_check#check_user_domains'
+  match '/check/accounts/:id', :to => 'site_check#check_account_domains'
+  match '/check/domains/:id', :to => 'site_check#check_single_domain'
 
 
   # The priority is based upon order of creation:

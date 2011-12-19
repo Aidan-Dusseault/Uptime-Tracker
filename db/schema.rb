@@ -10,7 +10,43 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111129191744) do
+ActiveRecord::Schema.define(:version => 20111215180843) do
+
+  create_table "accounts", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
+  end
+
+  create_table "domains", :force => true do |t|
+    t.string   "address"
+    t.string   "name"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "account_id"
+    t.integer  "check_interval"
+    t.time     "last_checked"
+  end
+
+  create_table "events", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "status_change"
+    t.integer  "domain_id"
+  end
+
+  create_table "memberships", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "account_id"
+    t.boolean  "owner"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "memberships", ["account_id"], :name => "index_memberships_on_account_id"
+  add_index "memberships", ["user_id", "account_id"], :name => "index_memberships_on_user_id_and_account_id", :unique => true
+  add_index "memberships", ["user_id"], :name => "index_memberships_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
@@ -19,8 +55,10 @@ ActiveRecord::Schema.define(:version => 20111129191744) do
     t.datetime "updated_at"
     t.string   "encrypted_password"
     t.string   "salt"
+    t.string   "username"
   end
 
-  add_index "users", ["name"], :name => "index_users_on_name", :unique => true
+  add_index "users", ["email"], :name => "index_users_on_email"
+  add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
 end

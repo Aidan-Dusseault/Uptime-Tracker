@@ -13,14 +13,19 @@ require 'digest'
 class User < ActiveRecord::Base
 
   attr_accessor :password
-  attr_accessible :name, :email, :password, :password_confirmtaion
+  attr_accessible :name, :username, :email, :password, :password_confirmtaion
 
-  has_many :accounts, :through => :memberships,
-                      :source  => "member_id"
+  email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  validates :name, :presence   => true,
-                   :uniqueness => { :case_sensitive => false },
-                   :length     => { :maximum => 20 }
+  has_many :memberships
+  has_many :accounts, :through => :memberships
+
+  validates :username, :presence   => true,
+                       :uniqueness => { :case_sensitive => false },
+                       :length     => { :maximum => 20 }
+  validates :email, :presence   => true,
+                    :uniqueness => { :case_sensitive => false }
+                    :format     => { :with => email_regex }
   validates :password, :presence     => true,
                        :confirmation => true,
                        :length       => { :within => 6..40 }

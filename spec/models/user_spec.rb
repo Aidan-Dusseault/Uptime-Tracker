@@ -3,7 +3,8 @@ require 'spec_helper'
 describe User do
 
   before(:each) do
-    @attr = { :name                  => "Example User", 
+    @attr = { :name                  => "Example User",
+              :username              => "Username",
               :email                 => "example@email.com",
               :password              => "password",
               :password_confirmation => "password" }
@@ -13,15 +14,26 @@ describe User do
     User.create!(@attr)
   end
 
-  it "should require a name" do
-    no_name_user = User.new(@attr.merge(:name => ""))
+  it "should require a username" do
+    no_name_user = User.new(@attr.merge(:username => ""))
     no_name_user.should_not be_valid
   end
 
-  it "should reject duplicate names" do
-    User.create!(@attr)
-    user_with_duplicate_name = User.new(@attr)
+  it "should require an email" do
+    no_email_user = User.new(@attr.merge(:email => ""))
+    no_email_user.should_not be_valid
+  end
+
+  it "should reject duplicate usernames" do
+    User.create(@attr)
+    user_with_duplicate_name = User.new(@attr.merge(:email => "another@email.com"))
     user_with_duplicate_name.should_not be_valid
+  end
+
+  it "should reject duplicate emails regardless of case" do
+    User.create(@attr)
+    user_with_duplicate_email = User.new(@attr.merge(:username => "anotheruser"))
+    user_with_duplicate_email.should_not be_valid
   end
 
   describe "password validations" do
