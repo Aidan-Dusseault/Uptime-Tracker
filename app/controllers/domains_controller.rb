@@ -6,7 +6,7 @@ class DomainsController < ApplicationController
   end
 
   def create
-    @domain = Domain.new(params[:domain], :last_checked => Time.now.utc)
+    @domain = Domain.new(params[:domain])
     if @domain.save
       #Change to redirect_to dashboard_path
       redirect_to root_path

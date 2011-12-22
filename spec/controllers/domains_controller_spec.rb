@@ -13,7 +13,7 @@ describe DomainsController do
     describe "failure" do
 
       before(:each) do
-        @attr = { :name => "", :address => "", :account_id => "", :check_interval => 5 }
+        @attr = { :name => "", :address => "", :account_id => "", :check_interval => 0 }
       end
 
       it "should not create a domain" do
@@ -31,16 +31,13 @@ describe DomainsController do
     describe "success" do
 
       before(:each) do
-        @attr = { :name => "Domain", :address => "www.google.ca", :account_id => Factory(:account).id, :check_interval => 5 }
+        @attr = { :name => "Domain", :address => "www.google.ca", :account_id => Factory(:account).id, :check_interval => 0 }
       end
 
       it "should create a domain" do
         lambda do
           post :create, :domain => @attr
         end.should change(Domain, :count).by(1)
-      end
-
-      it "should set the last_checked time for the domain" do
       end
 
       it "should redirect to the dashboard" do
