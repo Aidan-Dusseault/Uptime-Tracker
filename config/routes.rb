@@ -4,6 +4,7 @@ UptimeTracker::Application.routes.draw do
   resources :users
   resources :domains
   resources :accounts
+  resources :dashboard
 
   root :to => 'pages#home'
   match '/signup', :to => 'users#new'

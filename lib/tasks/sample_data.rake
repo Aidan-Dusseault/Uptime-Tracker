@@ -26,5 +26,14 @@ namespace :db do
     450.times do
       Domain.create!(:name => "Example Domain", :address => "www.google.ca", :account_id => 1+rand(150), :check_interval => 0)
     end
+    900.times do
+      Event.create!(:status_change => rand(2), :domain_id => 1+rand(450))
+    end
+    Domain.all.each do |domain|
+      if domain.events.first
+        domain.status = domain.events.first.status_change
+        domain.save
+      end
+    end
   end
 end

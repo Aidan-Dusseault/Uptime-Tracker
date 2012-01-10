@@ -35,9 +35,9 @@ class SiteCheckController < ApplicationController
     domains.each do |domain|
       http_response = up?(domain.address)
 
-      if http_response && domain.status != 2
-        domain.events.build(:status_change => 2)
-        domain.status = 2
+      if http_response && domain.status != 1
+        domain.events.build(:status_change => 1)
+        domain.status = 1
         domain.last_checked = Time.now.utc
         domain.save
       end
