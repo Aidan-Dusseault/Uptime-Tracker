@@ -26,7 +26,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   def test_sign_in
-    controller.current_user=(Factory(:user))
+    controller.current_user=(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
   end
   
 end

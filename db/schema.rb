@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111215180843) do
+ActiveRecord::Schema.define(:version => 20111220172823) do
 
   create_table "accounts", :force => true do |t|
     t.datetime "created_at"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(:version => 20111215180843) do
     t.datetime "updated_at"
     t.integer  "account_id"
     t.integer  "check_interval"
-    t.time     "last_checked"
+    t.time     "last_checked",   :default => '2000-01-01 00:00:00', :null => false
   end
 
   create_table "events", :force => true do |t|
