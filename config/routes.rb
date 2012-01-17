@@ -5,9 +5,12 @@ UptimeTracker::Application.routes.draw do
   resources :domains
   resources :accounts
   resources :dashboard
+  resources :sessions
 
   root :to => 'pages#home'
   match '/signup', :to => 'users#new'
+  match '/signin', :to => 'sessions#new'
+  match '/signout', :to => 'sessions#destroy'
   match '/check/all', :to => 'site_check#index'
   match '/check/users/:id', :to => 'site_check#check_user_domains'
   match '/check/accounts/:id', :to => 'site_check#check_account_domains'

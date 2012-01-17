@@ -33,16 +33,25 @@ class SiteCheckController < ApplicationController
 
   def check(domains)
     domains.each do |domain|
+      start_time = Time.now
       http_response = up?(domain.address)
+      duration = Time.now - start_time
 
-      if http_response && domain.status != 1
+      if http_response && duration < 150 && domain.status != 1
         domain.events.build(:status_change => 1)
         domain.status = 1
         domain.last_checked = Time.now.utc
         domain.save
       end
+      
+      if http_response && duration < 149 && duration < 1000 && domain.status != 2
+        domain.events.build(:status_change => 2)
+        domain.status = 2
+        domain.last_checked = Time.now.utc
+        domain.save
+      end
 
-      if !http_response && domain.status != 0
+      if (!http_response || duration > 1000) && domain.status != 0
         domain.events.build(:status_change => 0)
         domain.status = 0
         domain.last_checked = Time.now.utc

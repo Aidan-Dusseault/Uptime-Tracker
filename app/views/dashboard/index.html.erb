@@ -1,1 +1,11 @@
 <h1>Recent</h1>
+<table>
+	<%= @recent_events.each do |event| %>
+		<tr>
+			<td><%= domain_name(Domain.find(event.domain_id)) %></td>
+			<td><%= event.status_change %></td>
+			<td><%= event.created_at %></td>
+		</tr>
+	<% end %>
+</table>
+<%= @current_user %>

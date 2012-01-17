@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(:version => 20111220172823) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
-    t.integer  "check_interval"
     t.time     "last_checked",   :default => '2000-01-01 00:00:00', :null => false
+    t.integer  "check_interval"
   end
 
   create_table "events", :force => true do |t|

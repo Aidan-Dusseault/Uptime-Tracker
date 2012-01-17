@@ -8,7 +8,11 @@ class DashboardController < ApplicationController
   private
     
     def compile_recent
-      @current_user.accounts.each do |account|
+      user_domains = Array.new 
+      user_events = Array.new
+      recent_array = Array.new
+      
+      current_user.accounts.each do |account|
         user_domains << account.domains
       end
       user_domains = user_domains.flatten
@@ -17,5 +21,9 @@ class DashboardController < ApplicationController
       end
       user_events = user_events.flatten
       user_events.sort_by {|hsh| hsh[:created_at]}
+      5.times do |n|
+        recent_array << user_events[n-1]
+      end
+      return recent_array
     end
 end
