@@ -1,29 +1,17 @@
 class DashboardController < ApplicationController
-
+  
   def index
-    @title = "Dashboard"
-    @recent_events = compile_recent
+    if signed_in?
+      @title = "Dashboard"
+      @recent_events = compile_recent
+    else
+      redirect_to signin_path
+    end
   end
 
   private
     
     def compile_recent
-      user_domains = Array.new 
-      user_events = Array.new
-      recent_array = Array.new
-      
-      current_user.accounts.each do |account|
-        user_domains << account.domains
-      end
-      user_domains = user_domains.flatten
-      user_domains.each do |domain|
-        user_events << domain.events
-      end
-      user_events = user_events.flatten
-      user_events.sort_by {|hsh| hsh[:created_at]}
-      5.times do |n|
-        recent_array << user_events[n-1]
-      end
-      return recent_array
+      recent_array = Event.recent_by_user(current_user).limit(5)
     end
 end

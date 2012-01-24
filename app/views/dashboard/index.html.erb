@@ -1,11 +1,24 @@
+<section>
 <h1>Recent</h1>
 <table>
-	<%= @recent_events.each do |event| %>
-		<tr>
-			<td><%= domain_name(Domain.find(event.domain_id)) %></td>
-			<td><%= event.status_change %></td>
-			<td><%= event.created_at %></td>
-		</tr>
+	<% unless @recent_events.empty? %>
+		<% @recent_events.each do |event| %>
+			<tr>
+				<td><%= link_to domain_name(Domain.find(event.domain_id)), domain_path(event.domain_id) %></td>
+				<td class="status<%= event.status_change %>"></td>
+				<td><%= event.created_at %></td>
+			</tr>
+		<% end %>
+	<% else %>
+		<p>No recent activity.</p>
 	<% end %>
 </table>
-<%= @current_user %>
+</section>
+<section>
+<h1>Accounts</h1>
+<ol>
+	<% current_user.accounts.each do |account| %>
+		<li><%= link_to account.name, account_path(account.id) %></li>
+	<% end %>
+</ol>
+</section>

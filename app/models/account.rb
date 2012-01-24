@@ -8,5 +8,11 @@ class Account < ActiveRecord::Base
 
   validates :name, :presence => true,
                    :length => { :maximum => 20 }
-  #validates :users, :presence => true
+                   
+  scope :owners, lambda { 
+    
+    joins("INNER JOIN memberships on account_id=accounts.id").
+    joins("INNER JOIN users on users.id=user_id").
+    where("memberships.owner = ?", true)
+  }
 end

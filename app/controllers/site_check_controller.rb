@@ -4,25 +4,30 @@ class SiteCheckController < ApplicationController
 
   def index
     check_domains
+    redirect_to :back
   end
 
   def check_domains
-    check(Domain.all)
+    check(Domain.expired)
+    redirect_to :back
   end
 
   def check_user_domains
     User.find(params[:id]).accounts.each do |account|
-      check(account.domains)
+      check(account.domains.expired)
     end
+    redirect_to :back
   end
 
   def check_account_domains
-    check(Account.find(params[:id]).domains)
+    check(Account.find(params[:id]).domains.expired)
+    redirect_to :back
   end
 
   def check_single_domain
     #The check method receives an array, so the single domain is wrapped in an array before being passed as an argument.
-    check([Domain.find(params[:id])])
+    check([Domain.find(params[:id]).expired])
+    redirect_to :back
   end
 
   private
@@ -44,14 +49,14 @@ class SiteCheckController < ApplicationController
         domain.save
       end
       
-      if http_response && duration < 149 && duration < 1000 && domain.status != 2
+      if http_response && duration > 149 && duration < 1000 && domain.status != 2
         domain.events.build(:status_change => 2)
         domain.status = 2
         domain.last_checked = Time.now.utc
         domain.save
       end
 
-      if (!http_response || duration > 1000) && domain.status != 0
+      if (!http_response || duration > 999) && domain.status != 0
         domain.events.build(:status_change => 0)
         domain.status = 0
         domain.last_checked = Time.now.utc

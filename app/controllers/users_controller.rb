@@ -8,8 +8,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     if @user.save
-      #Change to redirect_to dashboard_path
-      redirect_to root_path
+      sign_in @user
+      redirect_to dashboard_path
     else
       @title = "Sign up"
       render 'new'

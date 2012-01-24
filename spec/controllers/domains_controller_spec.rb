@@ -3,16 +3,86 @@ require 'spec_helper'
 describe DomainsController do
 
   describe "GET 'new'" do
-    it "should be successful" do
-      get 'new'
-      response.should be_success
+    
+    describe "for those not signed in" do
+    
+      it "should redirect to the signin page" do
+        get 'new'
+        response.should redirect_to(signin_path)
+      end
+    end
+    
+    describe "for a signed in user" do
+      
+      before(:each) do
+        test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
+      end 
+      
+      it "should be successful" do
+        get 'new'
+        response.should be_success
+      end
+    end
+  end
+  
+  describe "GET 'show" do
+    
+    describe "for a non-signed-in user" do
+      
+      before(:each) do
+        @domain = Factory(:domain)
+      end
+      
+      it "should redirect to the signin page" do
+        get :show, :id => @domain.id
+        response.should redirect_to(signin_path)
+      end
+    end
+    
+    describe "for a signed-in-user" do
+      
+      describe "for a non-member of the associated account" do
+        
+        before(:each) do
+          test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
+          account = Account.create(:name => "Account")
+          @domain = Domain.create(:name => "Domain", :address => "www.google.ca", :status => 1, :check_interval => 0, :account_id => account.id)
+        end
+        
+        it "should redirect to the root path" do
+          get :show, :id => @domain.id
+          response.should redirect_to(root_path)
+        end
+      end
+      
+      describe "for a member of the associated account" do
+        
+        before(:each) do
+          test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
+          account = Account.create(:name => "Account")
+          controller.current_user.accounts << account
+          @domain = Domain.create(:name => "Domain", :address => "www.google.ca", :status => 1, :check_interval => 0, :account_id => account.id)
+          account.domains << @domain
+        end
+        
+        it "should be successful" do
+          get :show, :id => @domain.id
+          response.should be_success
+        end
+        it "should have the right title" do
+          get :show, :id => @domain.id
+          response.should have_selector("title", :content => domain_name(@domain))
+        end
+      end
     end
   end
 
   describe "POST 'create'" do
+    
     describe "failure" do
 
       before(:each) do
+        test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
         @attr = { :name => "", :address => "", :account_id => "", :check_interval => 0 }
       end
 
@@ -31,7 +101,8 @@ describe DomainsController do
     describe "success" do
 
       before(:each) do
-        @attr = { :name => "Domain", :address => "www.google.ca", :account_id => Factory(:account).id, :check_interval => 0 }
+        test_sign_in(Factory(:user, :name => Factory.next(:username), :email => Factory.next(:email)))
+        @attr = { :name => "Domain", :address => "www.google.ca", :account_id => Account.create(:name => "Account").id, :check_interval => 0 }
       end
 
       it "should create a domain" do
@@ -41,6 +112,8 @@ describe DomainsController do
       end
 
       it "should redirect to the dashboard" do
+        post :create, :domain => @attr
+        response.should redirect_to(dashboard_path)
       end
     end
   end

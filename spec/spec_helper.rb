@@ -29,4 +29,13 @@ RSpec.configure do |config|
     controller.sign_in(user)
   end
   
+  def domain_name(domain)
+    unless domain.name.blank?
+      domain.name
+    else
+      domain.address
+    end
+  end
+  
+  
 end

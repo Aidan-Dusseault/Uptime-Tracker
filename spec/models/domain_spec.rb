@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Domain do
 
   before(:each) do
-    @account = Factory(:account)
+    @account = Account.create(:name => "Account")
     @attr = { :name => "Test Domain", :address => "www.google.com", :account_id => @account.id, :check_interval => 5 }
   end
 

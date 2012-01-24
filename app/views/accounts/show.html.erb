@@ -1,0 +1,36 @@
+<h1><%= @account.name %></h1>
+<h2>Owner: <%= @account. %></h2>
+<section>
+	<h2>Recent</h2>
+	<table>
+		<% unless @recent_events.empty? %>
+			<% @recent_events.each do |event| %>
+				<tr>
+					<td><%= link_to domain_name(Domain.find(event.domain_id)), domain_path(event.domain_id) %></td>
+					<td class="status<%= event.status_change %>"></td>
+					<td><%= event.created_at %></td>
+				</tr>
+			<% end %>
+		<% else %>
+			<p>No recent activity.</p>
+		<% end %>
+	</table>
+</section>
+<section>
+	<h2>Domains</h2>
+	<table>
+		<% unless @account.domains.empty? %>
+			<% @account.domains.each do |domain| %>
+				<tr>
+					<td><%= link_to domain_name(domain), domain_path(domain.id) %></td>
+					<td class="status<%= domain.status %>"></td>
+				</tr>
+			<% end %>
+		<% else %>
+			<p>No recent activity.</p>
+		<% end %>
+	</table>
+</section>
+<section>
+	<h2>Members</h2>
+	

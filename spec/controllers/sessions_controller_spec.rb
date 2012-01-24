@@ -36,20 +36,20 @@ describe SessionsController do
         flash.now[:error].should =~ /invalid/i
       end
     end
-    describe "with valid email and password" do
+    describe "with valid username and password" do
       
       before(:each) do
-        @user = Factory(:user)
-        @attr = { :email => @user.email, :password => @user.password }
+        @user = Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email))
+        @attr = { :username => @user.username, :password => @user.password }
       end
       it "should sign the user in" do
         post :create, :session => @attr
         controller.current_user.should == @user
         controller.should be_signed_in
       end
-      it "should redirect tot he dashboard" do
+      it "should redirect to the dashboard" do
         post :create, :session => @attr
-        response.should redirect_to(user_path(@user))
+        response.should redirect_to(dashboard_path)
       end
     end
   end

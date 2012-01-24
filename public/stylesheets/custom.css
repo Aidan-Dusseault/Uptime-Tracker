@@ -1,0 +1,40 @@
+tbody tr td.status1{
+	background-image: url('../images/GreenDot.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	}
+
+tbody tr td.status0{
+	background-image: url('../images/RedDot.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	
+	}
+	
+tbody tr td.status2{
+	background-image: url('../images/YellowDot.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	
+	}
+	
+.h2status1{
+	background-image: url('../images/GreenDot.png');
+	background-repeat: no-repeat;
+	background-position: 90px center;
+	
+	}
+	
+.h2status0{
+	background-image: url('../images/RedDot.png');
+	background-repeat: no-repeat;
+	background-position: 90px center;
+	
+	}
+
+.h2status2{
+	background-image: url('../images/YellowDot.png');
+	background-repeat: no-repeat;
+	background-position: 90px center;
+	
+	}

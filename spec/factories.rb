@@ -1,27 +1,31 @@
 Factory.define :user do |user|
   user.name                  "User"
-  user.username              "Username"
-  user.email                 "example@email.com"
+  user.sequence(:username)   { |n| "Username #{n}" }
+  user.sequence(:email)      { |n| "email#{n}@example.com" }
   user.password              "password"
   user.password_confirmation "password"
 end
 
 Factory.define :account do |account|
   account.name  "Account"
-  account.users {|users| [users.association(:user)]}
+end
+
+Factory.define :membership do |membership|
+  membership.association :user
+  membership.association :account
 end
 
 Factory.define :domain do |domain|
   domain.name           "Domain"
   domain.address        "www.google.ca"
-  domain.status         2
-  domain.accounts       {|accounts| [accounts.association(:account)]}
+  domain.status         1
+  domain.association    :account
   domain.check_interval 5
 end
 
 Factory.define :event do |event|
   event.status_change 0
-  event.domains       {|domains| [domains.association(:domain)]}
+  event.association   :domain
 end
 
 Factory.sequence :username do |n|

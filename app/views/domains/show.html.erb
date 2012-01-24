@@ -1,0 +1,14 @@
+<h1><%= @domain.name %></h1>
+<h2 class="h2status<%= @domain.status %>">Status: </h2>
+<h3>Status History</h3>
+<table>
+	<tr>
+		<td>Time</td><td>Status</td>
+	</tr>
+	<% @domain.events.reverse!.each do |event| %>
+		<tr>
+			<td><%= event.created_at %></td>
+			<td class="status<%= event.status_change %>"></td>
+		</tr>
+	<% end %>
+</table>
