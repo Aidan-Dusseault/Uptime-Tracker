@@ -1,5 +1,5 @@
 <h1><%= @account.name %></h1>
-<h2>Owner: <%= @account. %></h2>
+<h2>Owner: <% @account.owners.each do |owner| %><%= owner.username %><% end %></h2>
 <section>
 	<h2>Recent</h2>
 	<table>
@@ -33,4 +33,8 @@
 </section>
 <section>
 	<h2>Members</h2>
-	
+	<ol>
+		<% @account.users.each do |member| %>
+			<li><%= member.username %></li>
+		<% end %>
+	</ol>

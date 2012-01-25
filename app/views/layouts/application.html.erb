@@ -9,7 +9,16 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
-
+<header>
+	<nav>
+		<% if signed_in? %>
+		<%= link_to "Sign out", signout_path %>
+		<% else %>
+		<%= link_to "Sign up", signup_path %>
+		<%= link_to "Sign in", signin_path %>
+		<% end %>
+	</nav>
+</header>
 <%= yield %>
 
 </body>
