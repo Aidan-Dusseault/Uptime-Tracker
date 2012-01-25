@@ -4,7 +4,11 @@ module DomainsHelper
     unless domain.name.blank?
       domain.name
     else
-      domain.address
+      if domain.address.length > 97
+        domain.address.slice(0, 97).concat("...")
+      else
+        domain.address
+      end
     end
   end
 end

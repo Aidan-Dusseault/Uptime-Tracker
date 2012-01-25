@@ -34,4 +34,28 @@ class AccountsController < ApplicationController
     @title = @account.name
     @recent_events = Event.recent_by_account(@account).limit(5)
   end
+  
+  def edit
+    if signed_in?
+      if Account.find(params[:id]).owners.include?(current_user)
+        @account = Account.find(params[:id])
+        @title = "Edit Account"
+      else
+        redirect_to root_path
+      end
+    else
+      redirect_to signin_path
+    end
+  end
+  
+  def update
+    @account = Account.find(params[:id])
+    if @account.update_attributes(params[:account])
+      flash[:success] = "Account updated."
+      redirect_to @account
+    else
+      @title = "Edit Account"
+      render 'edit'
+    end
+  end
 end
