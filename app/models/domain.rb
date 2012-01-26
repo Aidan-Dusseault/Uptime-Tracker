@@ -18,14 +18,6 @@ class Domain < ActiveRecord::Base
   scope :expired, lambda {
                             where("last_checked + check_interval <= CURRENT_TIMESTAMP")
                          }
-
-  def owners
-    
-    User.joins("INNER JOIN memberships on user_id=users.id").
-    joins("INNER JOIN accounts on accounts.id=account_id").
-    joins("INNER JOIN domains on domains.id=domain_id").
-    where("memberships.owner = ? AND memberships.domain_id = ?", true, self.id)
-  end
   
   private
     def http_add

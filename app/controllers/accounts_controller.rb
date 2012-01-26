@@ -49,13 +49,21 @@ class AccountsController < ApplicationController
   end
   
   def update
-    @account = Account.find(params[:id])
-    if @account.update_attributes(params[:account])
-      flash[:success] = "Account updated."
-      redirect_to @account
+    if signed_in?
+      if Account.find(params[:id]).owners.include?(current_user)
+        @account = Account.find(params[:id])
+        if @account.update_attributes(params[:account])
+          flash[:success] = "Account updated."
+          redirect_to @account
+        else
+          @title = "Edit Account"
+          render 'edit'
+        end
+      else
+        redirect_to root_path
+      end
     else
-      @title = "Edit Account"
-      render 'edit'
+      redirect_to signin_path
     end
   end
 end

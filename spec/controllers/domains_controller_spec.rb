@@ -46,7 +46,7 @@ describe DomainsController do
         before(:each) do
           test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
           account = Account.create(:name => "Account")
-          @domain = Domain.create(:name => "Domain", :address => "www.google.ca", :status => 1, :check_interval => 0, :account_id => account.id)
+          @domain = Domain.create(:name => "Domain", :address => "www.google.ca", :status => 1, :check_interval => 5, :account_id => account.id)
         end
         
         it "should redirect to the root path" do
@@ -61,17 +61,13 @@ describe DomainsController do
           test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
           account = Account.create(:name => "Account")
           controller.current_user.accounts << account
-          @domain = Domain.create(:name => "Domain", :address => "www.google.ca", :status => 1, :check_interval => 0, :account_id => account.id)
+          @domain = Domain.create(:name => "Domain", :address => "www.google.ca", :status => 1, :check_interval => 5, :account_id => account.id)
           account.domains << @domain
         end
         
         it "should be successful" do
           get :show, :id => @domain.id
           response.should be_success
-        end
-        it "should have the right title" do
-          get :show, :id => @domain.id
-          response.should have_selector("title", :content => domain_name(@domain))
         end
       end
     end
@@ -83,7 +79,7 @@ describe DomainsController do
 
       before(:each) do
         test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
-        @attr = { :name => "", :address => "", :account_id => "", :check_interval => 0 }
+        @attr = { :name => "", :address => "", :account_id => "", :check_interval => "" }
       end
 
       it "should not create a domain" do
@@ -102,7 +98,7 @@ describe DomainsController do
 
       before(:each) do
         test_sign_in(Factory(:user, :name => Factory.next(:username), :email => Factory.next(:email)))
-        @attr = { :name => "Domain", :address => "www.google.ca", :account_id => Account.create(:name => "Account").id, :check_interval => 0 }
+        @attr = { :name => "Domain", :address => "www.google.ca", :account_id => Account.create(:name => "Account").id, :check_interval => 5 }
       end
 
       it "should create a domain" do
@@ -155,16 +151,15 @@ describe DomainsController do
         before(:each) do
           @account = Account.create(:name => "Account")
           @user.accounts << @account
+          @membership = @account.memberships.first
+          @membership.owner = true
+          @membership.save
           @domain = Factory(:domain, :account_id => @account)
         end
         
         it "should be a success" do
           get :edit, :id => @domain.id
           response.should be_success
-        end
-        it "should have the right title" do
-          get :edit, :id => @domain.id
-          response.should have_selector("title", :content => "Edit Domain")
         end
       end
     end
@@ -187,9 +182,12 @@ describe DomainsController do
     describe "for a signed-in user" do
       
       before(:each) do
-        @user = test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:username)))
+        @user = test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
         @account = Account.create(:name => "Name")
         @user.accounts << @account
+        @membership = @account.memberships.first
+        @membership.owner = true
+        @membership.save
       end
       
       describe "for a non-owner" do
@@ -200,7 +198,7 @@ describe DomainsController do
         
         it "should redirect to the root path" do
           put :update, :id => @other_users_domain.id, :domain => {}
-          resonse.should redirect_to(root_path)
+          response.should redirect_to(root_path)
         end
       end
       
@@ -219,10 +217,6 @@ describe DomainsController do
           it "should render the 'edit' page" do
             put :update, :id => @domain.id, :domain => @attr
             response.should render_template('edit')
-          end
-          it "should have the right title" do
-            put :update, :id => @domain.id, :domain => @attr
-            response.should have_selector("title", :content => "Edit Account")
           end
         end
         

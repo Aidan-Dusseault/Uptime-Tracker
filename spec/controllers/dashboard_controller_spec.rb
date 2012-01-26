@@ -28,10 +28,6 @@ describe DashboardController do
         get 'index'
         response.should be_success
       end
-      it "should have the right title" do
-        get 'index'
-        response.should have_selector("title", :content => "Dashboard")
-      end
       it "should include a feed of the user's recent events" do
         get 'index'
         Event.recent_by_user(controller.current_user).should include(@event1)

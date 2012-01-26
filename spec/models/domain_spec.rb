@@ -23,7 +23,7 @@ describe Domain do
   end
 
   it "should reject domains with long names" do
-    long = "a" * 21
+    long = "a" * 101
     domain = Domain.create(@attr.merge(:name => long))
     domain.should_not be_valid
   end

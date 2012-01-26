@@ -27,41 +27,54 @@ describe AccountsController do
   
   describe "POST 'create'" do
     
-    before(:each) do
-      test_sign_in(Factory(:user, :username => "Other Test User", :email => "otheremail@email.com"))
-    end
+    describe "for a non-signed in user" do
       
-    describe "failure" do
-    
-      before(:each) do
-        @attr = { :name => "" }
-      end
-      
-      it "should not create an account" do
-        lambda do
-          post :create, :account => @attr
-        end.should_not change(Account, :count)
-      end
-    
-      it "should render the 'new' page" do
+      it "should redirect to the signin page" do
         post :create, :account => @attr
-        response.should render_template('new')
+        response.should redirect_to(signin_path)
       end
     end
-
-    describe "success" do
-
+    
+    describe "for a signed in user" do
+      
       before(:each) do
-        @attr = { :name => "Account" }
+        test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
       end
-
-      it "should create an account" do
-        lambda do
+      
+      describe "failure" do
+    
+        before(:each) do
+          @attr = { :name => "" }
+        end
+      
+        it "should not create an account" do
+          lambda do
+            post :create, :account => @attr
+          end.should_not change(Account, :count)
+        end
+    
+        it "should render the 'new' page" do
           post :create, :account => @attr
-        end.should change(Account, :count).by(1)
+          response.should render_template('new')
+        end
       end
 
-      it "should redirect to the dashboard" do
+      describe "success" do
+
+        before(:each) do
+          @attr = { :name => "Account" }
+        end
+
+        it "should create an account" do
+          lambda do
+            post :create, :account => @attr
+          end.should change(Account, :count).by(1)
+        end
+
+        it "should redirect to the dashboard" do
+          post :create, :account => @attr
+          response.should redirect_to(dashboard_path)
+        end
       end
     end
   end
@@ -86,6 +99,9 @@ describe AccountsController do
         @user = test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
         @account = Account.create(:name => "Account")
         @user.accounts << @account
+        @membership = @account.memberships.first
+        @membership.owner = true
+        @membership.save
       end
       
       describe "for a non-owner" do
@@ -105,10 +121,6 @@ describe AccountsController do
         it "should be a success" do
           get :edit, :id => @account
           response.should be_success
-        end
-        it "should have the right title" do
-          get :edit, :id => @account
-          response.should have_selector("title", :content => "Edit Account")
         end
       end
     end
@@ -131,7 +143,7 @@ describe AccountsController do
     describe "for a signed-in user" do
       
       before(:each) do
-        @user = test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:username)))
+        @user = test_sign_in(Factory(:user, :username => Factory.next(:username), :email => Factory.next(:email)))
       end
       
       describe "for a non-owner" do
@@ -142,7 +154,7 @@ describe AccountsController do
         
         it "should redirect to the root path" do
           put :update, :id => @other_users_account.id, :account => {}
-          resonse.should redirect_to(root_path)
+          response.should redirect_to(root_path)
         end
       end
       
@@ -151,6 +163,9 @@ describe AccountsController do
         before(:each) do
           @account = Account.create(:name => "Name")
           @user.accounts << @account
+          @membership = @account.memberships.first
+          @membership.owner = true
+          @membership.save
         end
         
         describe "failure" do
@@ -162,10 +177,6 @@ describe AccountsController do
           it "should render the 'edit' page" do
             put :update, :id => @account.id, :account => @attr
             response.should render_template('edit')
-          end
-          it "should have the right title" do
-            put :update, :id => @account.id, :account => @attr
-            response.should have_selector("title", :content => "Edit Account")
           end
         end
         
